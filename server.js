@@ -1,6 +1,10 @@
 const express = require("express");
 const bodyparse = require("body-parser")
 const request = require("request");
+const next = require("next");
+const dev = process.env.NODE_ENV !== 'production';
+const server = next({ dev });
+const handle = server.getRequestHandler()
 const app = express();
 app.use(bodyparse.urlencoded({
     extended: true
@@ -26,11 +30,12 @@ function rnd(min, max) {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+server.prepare()
+  .then(()=> {
 app.get("/", (req, res) => {
-    res.send("Hi! APP IS ON!")
+    return handle(req,res);
 });
 app.post("/events", (req, res) => {
-  console.log(req.body)
     if (typeof(req.body.event.text) == "string") {
         words = req.body.event.text.split(" ");
         if (words[0]=='I' && words[1]=='shall' && words[2]=='transfer' && words[4]=='to'&& words[5] == '<@UMTK90DD0>'& req.body.event.channel != "CGSEAP135" && req.body.event.bot_id == "BH6353LKZ") {
@@ -95,3 +100,8 @@ app.post("/events", (req, res) => {
 });
 
 app.listen(3000, (err) => console.log("Listening on port 3000"));
+  })
+.catch((e)=> {
+  console.log(e)
+  process.exit(1)
+});
