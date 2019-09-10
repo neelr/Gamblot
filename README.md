@@ -1,2 +1,3 @@
 # Gamblot
-A gambling bot for GP in HackClub!
+
+gamble all your gp. NOW
