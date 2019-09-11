@@ -1,3 +1,3 @@
 # Gamblot
 
-gamble all your gp. NOW
+Description at http://gamblot.glitch.me/
