@@ -133,6 +133,17 @@ server.prepare()
       res.sendStatus(401);
     }
   })
+  app.post("/lotterycheck",(req,res)=> {
+    var allLot = [];
+    base("Lottery").select({}).eachPage(function page(records, fetchNextPage) {
+        records.forEach((val)=> {
+          allLot.push({"ID":val.get("ID"),"Check":val.get("Check ID"),"del":val.getId()});
+        })
+        fetchNextPage();
+      },(err)=> {
+        res.send({"text":"The current amount of submissions right now is *"+allLot.length+"* which means you have a *"+100*(1/(allLot.length+1))+"%* chance of winning a jackpot of *"+allLot.length*20+"gp*!","response_type": "in_channel",})
+      });
+  })
 app.get("/", (req, res) => {
     return handle(req,res);
 });
@@ -178,7 +189,7 @@ app.post("/events", (req, res) => {
                       var gp = parseInt(words[2]);
                       if (gp == 20) {
                         var id = ID();
-                        sendText(words[4],words[5],"You have been signed up for the lottery to win the jackpot! This will take place at this Sunday! You can buy more tickets for a higher chance at winning!");
+                        sendText(words[4],words[5],"You have been signed up for the lottery to win the jackpot! This will take place at this Saturday at 12:00 PST (HackNight)! You can buy more tickets for a higher chance at winning!");
                         addLottery(words[1].split("<@")[1].split(">")[0],id);
                         sendMoney(words[1].split("<@")[1].split(">")[0], 0,"Your ID for the lottery is "+id)
                       } else {
