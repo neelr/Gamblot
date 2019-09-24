@@ -178,7 +178,7 @@ app.post("/events", (req, res) => {
                       var gp = parseInt(words[2]);
                       if (gp == 20) {
                         var id = ID();
-                        sendText(words[4],words[5],"You have been signed up for the lottery to win 200gp! This will take place at this Sunday! You can buy more tickets for a higher chance at winning!");
+                        sendText(words[4],words[5],"You have been signed up for the lottery to win the jackpot! This will take place at this Sunday! You can buy more tickets for a higher chance at winning!");
                         addLottery(words[1].split("<@")[1].split(">")[0],id);
                         sendMoney(words[1].split("<@")[1].split(">")[0], 0,"Your ID for the lottery is "+id)
                       } else {
@@ -303,8 +303,8 @@ app.post("/lottery",(req,res)=> {
       },(err)=> {
         var random = rnd(0,allLot.length-1);
         res.send(allLot[random]);
-        sendMoney(allLot[random].ID,200,"CONGRATS YOU WON THE LOTTERY!!!! Your ticket id that won was "+allLot[random].Check);
-        sendText ("CN9LWFDQF","undefined","*The lottery has been chosen! User <@"+allLot[random].ID+"> has won this lottery!*")
+        sendMoney(allLot[random].ID,allLot.length*20,"CONGRATS YOU WON THE LOTTERY!!!! Your ticket id that won was "+allLot[random].Check);
+        sendText ("CN9LWFDQF","undefined","*The lottery has been chosen! User <@"+allLot[random].ID+"> has won this lottery! The total gp won was "+allLot.length*20+"!*")
         //Cleaning up
         allLot.map((val)=> {
           console.log(val)
