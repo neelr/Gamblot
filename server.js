@@ -27,6 +27,100 @@ function startGame(uuid,ts,channel,amount,add,bot) {
   console.log(build);
   })
 }
+function startRoulette(uuid,ts,channel,amount) {
+  getRoulette((e,r)=> {
+  var build = JSON.parse(r.body).result;
+    if (build[parseFloat(ts)*1000000]) {
+      if (build[parseFloat(ts)*1000000].players[uuid]) {
+        sendText(channel,ts, "You have already given the money to the bot!");
+        sendMoney(uuid,amount,"REFUND FOR ROULETTE!");
+      } else if (Object.keys(build[parseFloat(ts)*1000000].players).length == 3) {
+        build[parseFloat(ts)*1000000].players[uuid] = {};
+        build[parseFloat(ts)*1000000].players[uuid].gp = amount;
+        build[parseFloat(ts)*1000000].total+=amount;
+        sendText(channel,ts, "Great! ALL PLAYERS ADDED! STARTING GAME! :roulette:");
+        var buffer = null;
+        var lowerID = "";
+        var construct = "";
+        Object.keys(build[parseFloat(ts)*1000000].players).map((val)=> {
+          if ((build[parseFloat(ts)*1000000].players[val].gp < buffer) || buffer == null) {
+            lowerID = val;
+            buffer = build[parseFloat(ts)*1000000].players[val].gp;
+          }
+          construct+=" <@"+val+">";
+        });
+        var players = build[parseFloat(ts)*1000000].players;
+        delete players[lowerID];
+        var randomNum = rnd(0,2);
+        var id = ID();
+        if (randomNum == 0) {
+          construct+=" The game is splitting across 3 highest people which are... ";
+          Object.keys(players).map((val)=> {
+            construct+=" <@"+val+">";
+            sendMoney(val,Math.floor(build[parseFloat(ts)*1000000].total/3),"Split 3 roulette! Your id is "+id);
+            log(val,build[parseFloat(ts)*1000000].total,"For roulette split 3",Math.floor(build[parseFloat(ts)*1000000].total/3),id)
+          });
+          sendText(channel,ts, construct);
+        } else if (randomNum == 1) {
+          construct+=" The game is splitting for";
+          randomNum = rnd(0,2);
+          players = Object.keys(players);
+          delete players[randomNum];
+          players.map((val)=> {
+            construct+=" <@"+val+">";
+            sendMoney(val,Math.floor(build[parseFloat(ts)*1000000].total/2),"Split 2 roulette! Your id is "+id);
+            log(val,build[parseFloat(ts)*1000000].total,"For roulette split 2",Math.floor(build[parseFloat(ts)*1000000].total/2),id)
+          });
+          construct+="!!!";
+           sendText(channel,ts, construct);
+        } else if (randomNum == 2) {
+          construct+=" The game is splitting for 1 person who is....";
+          randomNum = rnd(0,2);
+          players = Object.keys(players)[randomNum];
+          construct+=" <@"+players+">!";
+          sendMoney(players,Math.floor(build[parseFloat(ts)*1000000].total/2),"Split 2 roulette! Your id is "+id);
+          log(players,build[parseFloat(ts)*1000000].total,"For roulette split 1",build[parseFloat(ts)*1000000].total,id)
+          construct+="!!!";
+          sendText(channel,ts, construct);
+        }
+        clearRoulette(parseFloat(ts)*1000000,build);
+      } else {
+        sendText(channel,ts, "Great :roulette:! Adding you to the game! We need "+(3-Object.keys(build[parseFloat(ts)*1000000].players).length)+" more people! :roulette:");
+        build[parseFloat(ts)*1000000].players[uuid] = {};
+        build[parseFloat(ts)*1000000].players[uuid].gp = amount;
+        build[parseFloat(ts)*1000000].total+=amount;
+        request({
+            method: 'POST',
+            url: process.env.ROULETTE,
+            json: true,
+            body:build
+        },(e,r)=> console.log(e));
+        console.log(build);
+      }
+    } else {
+      sendText(channel,ts, "You have started a new game :roulette: :roulette:! Please ask OTHER PEOPLE to give money bellow with the reason `roulette` \n The game works when all 4 people pitch in, the person who pitched the least drops, and the 3 left, either split 3 way, 2 way, or 1 way!");
+      build[parseFloat(ts)*1000000]= {"channel":channel,"total":amount,"players":{}};
+      build[parseFloat(ts)*1000000].players[uuid] = {};
+      build[parseFloat(ts)*1000000].players[uuid].gp = amount;
+      request({
+          method: 'POST',
+          url: process.env.ROULETTE,
+          json: true,
+          body:build
+      },(e,r)=> console.log(e));
+      console.log(build);
+    }
+  })
+}
+function clearRoulette (ts,build) {
+  delete build[ts];
+  request({
+      method: 'POST',
+      url: process.env.ROULETTE,
+      json: true,
+      body:build
+  },(e,r)=> console.log(e));
+}
 function cleanupGame(uuid) {
   getGames((e,r)=> { 
   var build = JSON.parse(r.body).result;
@@ -44,6 +138,12 @@ function getGames(callback) {
   request({
       method: 'GET',
       url: process.env.GAME
+  },callback)
+}
+function getRoulette(callback) {
+  request({
+      method: 'GET',
+      url: process.env.ROULETTE
   },callback)
 }
 function addLottery (uuid,id) {
@@ -125,6 +225,9 @@ function rnd(min, max) {
 }
 server.prepare()
   .then(()=> {
+  app.get("/_next/*",(req,res)=>  {
+    return handle(req,res)
+  });
   app.post("/refund",(req,res)=> {
     if (req.body.key==process.env.REFUND) {
       sendMoney(req.body.uuid,req.body.gp);
@@ -141,7 +244,7 @@ server.prepare()
         })
         fetchNextPage();
       },(err)=> {
-        res.send({"text":"The current amount of submissions right now is *"+allLot.length+"* which means you have a *"+100*(1/(allLot.length+1))+"%* chance of winning a jackpot of *"+allLot.length*20+"gp*!","response_type": "in_channel",})
+        res.send({"text":"The current amount of submissions right now is *"+allLot.length+"* which means each submission has a *"+100*(1/(allLot.length))+"%* chance of winning a jackpot of *"+allLot.length*20+"gp*!","response_type": "in_channel",})
       });
   })
 app.get("/", (req, res) => {
@@ -196,6 +299,8 @@ app.post("/events", (req, res) => {
                         sendText(words[4],words[5],"You need to pay 20gp to sign up for the lottery! Refunding you....");
                         sendMoney(words[1].split("<@")[1].split(">")[0], gp,"Refund for lottery! Next time pay 20gp!")
                       }
+                    } else if (words[3]=="roulette" && words[5] != "undefined") {
+                      startRoulette(words[1].split("<@")[1].split(">")[0],words[5],words[4],parseInt(words[2]));
                     } else {
                       var gp = parseInt(words[2]);
                       var num = rnd(0,100);

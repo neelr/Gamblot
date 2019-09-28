@@ -4,7 +4,8 @@
   "description": "Gambling slack bot",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "next build"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
