@@ -16,7 +16,7 @@ module.exports = (req, res) => {
             if (body) {
               if (Object.keys(body).includes(words[1].split("<@")[1].split(">")[0])) {
                 tools.sendText(words[4], words[5], "Starting a new game and killing your old one......");
-                cleanupGame(words[1].split("<@")[1].split(">")[0]);
+                tools.cleanupGame(words[1].split("<@")[1].split(">")[0]);
                 tools.sendText(words[4], words[5], ":blackjack:A GAME HAS STARTED:blackjack: \n *RULES:* \n 1) Type `hit` for a card \n 2) Type `bail` to bail \n *MULTIPLIERS:* \n 1) If you bail you get _70%_ of your money \n 2) If you bust you get _0%_ \n 3) If you win and get 21, you get a _3x_ multiplier!");
                 tools.startGame(words[1].split("<@")[1].split(">")[0], words[5], words[4], parseInt(words[2]), 0, 0)
               } else {
@@ -85,7 +85,7 @@ module.exports = (req, res) => {
                   tools.sendMoney(req.body.event.user, body[req.body.event.user].gp * 3, "You won BLACKJACK! :blackjack: Your id is " + id);
                   tools.log(req.body.event.user, body[req.body.event.user].gp, "Won w/ 21", Math.floor(body[req.body.event.user].gp * 3), id);
                 }
-                cleanupGame(req.body.event.user);
+                tools.cleanupGame(req.body.event.user);
               } else if (body[req.body.event.user].add > 21) {
                 if (body[req.body.event.user].bot <= 21) {
                   id = tools.ID();
@@ -97,7 +97,7 @@ module.exports = (req, res) => {
                   tools.sendText(body[req.body.event.user].channel, body[req.body.event.user].ts, "You got *" + body[req.body.event.user].add + "* and went over 21... and the bot did too.... you get 90% back");
                   tools.sendMoney(req.body.event.user, Math.floor(body[req.body.event.user].gp * 0.9), "You tied at blackjack... Your game id is " + id);
                 }
-                cleanupGame(req.body.event.user);
+                tools.cleanupGame(req.body.event.user);
               } else {
                 tools.startGame(req.body.event.user, body[req.body.event.user].ts, body[req.body.event.user].channel, body[req.body.event.user].gp, body[req.body.event.user].add, body[req.body.event.user].bot)
                 tools.sendText(body[req.body.event.user].channel, body[req.body.event.user].ts, "You have chosen to `hit` and have drawn a(n) *" + add + "*... Now your total is *" + body[req.body.event.user].add + "*. And the bots has played. Make sure you don't go over 21!");
@@ -131,7 +131,7 @@ module.exports = (req, res) => {
                 tools.sendText(body[req.body.event.user].channel, body[req.body.event.user].ts, "You got *" + body[req.body.event.user].add + "* ... and the bot did too.... you get 90% back The bot got " + body[req.body.event.user].bot);
                 tools.sendMoney(req.body.event.user, Math.floor(body[req.body.event.user].gp * 0.9), "You tied at blackjack... Your id is " + id);
               }
-              cleanupGame(req.body.event.user);
+              tools.cleanupGame(req.body.event.user);
             }
           }
         });
