@@ -112,7 +112,7 @@ module.exports = (req, res) => {
           if (Object.keys(body).includes(req.body.event.user)) {
             if (body[req.body.event.user].ts == req.body.event.thread_ts) {
               id = tools.ID()
-              while (!(body[req.body.event.user].bot == 21 || body[req.body.event.user].bot >= 13)) {
+              while (!(body[req.body.event.user].bot == 21 || body[req.body.event.user].bot >= 16)) {
                 body[req.body.event.user].bot += tools.rnd(1, 10);
               }
               if (body[req.body.event.user].bot > 21) {
