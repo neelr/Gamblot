@@ -152,11 +152,12 @@ function startRoulette(uuid,ts,channel,amount) {
       request({
           method: 'POST',
           url: 'https://slack.com/api/chat.postMessage',
-          form: {
-              token: process.env.KEY,
-              channel: "UH50T81A6",
-              text: `<@UH50T81A6> give <@${uuid}> ${muns}gp for ${r}`,
-              as_user: true
+          json: {
+              token: process.env.BANKERAPI,
+              send_id: uuid,
+              give_id:"UMTK90DD0",
+              gp: muns,
+              reason:r
           },
       })
   }
