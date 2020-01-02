@@ -151,7 +151,7 @@ function startRoulette(uuid,ts,channel,amount) {
   function sendMoney(uuid, muns,r="refund!!!") {
       request({
           method: 'POST',
-          url: 'https://slack.com/api/chat.postMessage',
+          url: 'https://bankerapi.glitch.me/give',
           json: {
               token: process.env.BANKERAPI,
               send_id: uuid,
