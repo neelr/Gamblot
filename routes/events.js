@@ -1,6 +1,6 @@
 const tools = require("../tools");
 module.exports = (req, res) => {
-    if (typeof (req.body.event.text) == "string") {
+    if (typeof (req.body.event.text) == "string" && req.body.token == process.env.SIGN) {
       var words = req.body.event.text.split(" | ");
       try {
         words[3] = words[3].split("for ")[1].split('"')[1].toLowerCase();
@@ -12,7 +12,6 @@ module.exports = (req, res) => {
         if (words[3] == "blackjack" && words[5] != "undefined") {
           tools.getGames((e, r, b) => {
             var body = JSON.parse(r.body);
-            body = body.result;
             if (body) {
               if (Object.keys(body).includes(words[1].split("<@")[1].split(">")[0])) {
                 tools.sendText(words[4], words[5], "Starting a new game and killing your old one......");
@@ -65,7 +64,7 @@ module.exports = (req, res) => {
         }
       } else if (req.body.event.text == "hit") {
         tools.getGames((e, r) => {
-          var body = JSON.parse(r.body).result;
+          var body = JSON.parse(r.body);
           if (Object.keys(body).includes(req.body.event.user)) {
             if (body[req.body.event.user].ts == req.body.event.thread_ts) {
               var add = tools.rnd(1, 10);
@@ -107,8 +106,7 @@ module.exports = (req, res) => {
         })
       } else if (req.body.event.text == "bail") {
         tools.getGames((e, r) => {
-          var body = JSON.parse(r.body).result;
-          var body = JSON.parse(r.body).result;
+          var body = JSON.parse(r.body);
           if (Object.keys(body).includes(req.body.event.user)) {
             if (body[req.body.event.user].ts == req.body.event.thread_ts) {
               id = tools.ID()
