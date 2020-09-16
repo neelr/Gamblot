@@ -29,14 +29,14 @@ module.exports = (req, res) => {
           });
         } else if (words[3] == "lottery") {
           var gp = parseInt(words[2]);
-          if (gp == 20) {
+          if (gp == 10) {
             var id = tools.ID();
             tools.sendText(words[4], words[5], "You have been signed up for the lottery to win the jackpot! This will take place at this Saturday at 12:00 PST (HackNight)! You can buy more tickets for a higher chance at winning!");
             tools.addLottery(words[1].split("<@")[1].split(">")[0], id);
             tools.sendMoney(words[1].split("<@")[1].split(">")[0], 0, "Your ID for the lottery is " + id)
           } else {
-            tools.sendText(words[4], words[5], "You need to pay 20gp to sign up for the lottery! Refunding you....");
-            tools.sendMoney(words[1].split("<@")[1].split(">")[0], gp, "Refund for lottery! Next time pay 20gp!")
+            tools.sendText(words[4], words[5], "You need to pay 10gp to sign up for the lottery! Refunding you....");
+            tools.sendMoney(words[1].split("<@")[1].split(">")[0], gp, "Refund for lottery! Next time pay 10gp!")
           }
         } else if (words[3] == "roulette" && words[5] != "undefined") {
           tools.startRoulette(words[1].split("<@")[1].split(">")[0], words[5], words[4], parseInt(words[2]));
@@ -46,13 +46,13 @@ module.exports = (req, res) => {
           name = words[1].split("<@")[1].split(">")[0]
           if (num <= 33) {
             tools.log(name, gp, "lost all money", 0, id);
-            tools.sendText(words[4], words[5], ":flying_money_with_wings: You HAVE LOST ALL YOU MANEY.. L:flying_money_with_wings:");
+            tools.sendText(words[4], words[5], ":flying_money_with_wings: You HAVE LOST ALL YOUR MANEY.. L:flying_money_with_wings:");
             tools.sendMoney(name, 0, "Your gamble id is " + id)
-          } else if (num > 33 && num <= 80) {
-            tools.log(name, gp, "lost 70% money", Math.floor(gp * 0.7), id);
-            tools.sendText(words[4], words[5], ":creeper:You ... didnt get any money...:creeper:");
+          } else if (num > 33 && num <= 65) {
+            tools.log(name, gp, "lost 50% money", Math.floor(gp * 0.5), id);
+            tools.sendText(words[4], words[5], ":creeper:You ... get 70% of your money...:creeper:");
             tools.sendMoney(name, Math.floor(gp * 0.7), "Your gamble id is " + id)
-          } else if (num > 80 && num <= 99) {
+          } else if (num > 65 && num <= 95) {
             tools.log(name, gp, "doubled the money", gp * 2, id);
             tools.sendText(words[4], words[5], ":moneybag: You DOUBLED YER MANEY:moneybag:");
             tools.sendMoney(name, gp * 2, "Your gamble id is " + id)

@@ -168,14 +168,17 @@ function startRoulette(uuid,ts,channel,amount) {
     return '_' + Math.random().toString(36).substr(2, 9);
   };
   function sendMoney(uuid, muns,r="refund!!!") {
-    console.log("GIVING MANEY")
-      axios.post("https://bankerapi.glitch.me/give",{
+      request({
+          method: 'POST',
+          url: 'https://bankerapi.glitch.me/give',
+          json: {
               token: process.env.BANKERAPI,
               send_id: uuid,
-              bot_id:"UMTK90DD0",
+              give_id:"UMTK90DD0",
               gp: muns,
               reason:r
-          }).then(d => console.log(d.data))
+          },
+      })
   }
   function sendText (channel,ts,text) {
     if (ts == "undefined") {
