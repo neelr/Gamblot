@@ -4,7 +4,7 @@ module.exports = (req, res) => {
     var allLot = [];
     base("Lottery").select({}).eachPage(function page(records, fetchNextPage) {
       records.forEach((val) => {
-        allLot.push({ "ID": val.get("ID"), "Check": val.get("Check ID"), "del": val.get.Id() });
+        allLot.push({ "ID": val.get("ID"), "Check": val.get("Check ID"), "del": val.id});
       })
       fetchNextPage();
     }, (err) => {

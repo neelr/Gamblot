@@ -7,7 +7,7 @@ This is a gambling bot for gp in the HackClub Slack Workspace!
 - ~Make a gambling system (in X gp get out X*something gp)~
 - ~Make a skill game~ BlackJack
 - ~Make a Lottery~
-- Make a 4 person jackpot game thing
+- ~Make a 4 person jackpot game thing~
 
 ## How to use
 

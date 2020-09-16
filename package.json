@@ -16,7 +16,8 @@
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-icons": "^3.7.0",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "axios": "^0.19.2"
   },
   "engines": {
     "node": "12.x"
